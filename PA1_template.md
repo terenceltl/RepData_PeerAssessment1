@@ -13,7 +13,8 @@ The following code was used to:
 (b) make echo = TRUE and message = FALSE as default  
 (c) suppress scientific notation
 
-```{r setoptions,echo=TRUE,message=FALSE}
+
+```r
 if (!require("knitr")){
   install.packages("knitr")
   library(knitr)
@@ -24,7 +25,8 @@ options(scipen=999)
 
 ## Loading and preprocessing the data
 
-```{r loading}
+
+```r
 # The data files activity.csv should be in the working dir,
 # and the zip file containing them can be downloaded at:
 # https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
@@ -41,7 +43,8 @@ activity = transform(activity,date=as.Date(date,format="%Y-%m-%d"))
 
 The missing values in the "steps" variable were ignored. So effectively, a NA would contribute zero towards the total.
 
-```{r stepsperday}
+
+```r
 if(!require(plyr)){
   install.packages("plyr")
   library(plyr)
@@ -51,22 +54,26 @@ dailySteps = ddply(activity,"date",summarise,totalSteps = sum(steps,na.rm = TRUE
 
 ### Make a histogram of the total number of steps taken each day
 
-```{r histstepsperday,fig.heigh=4}
+
+```r
 hist(dailySteps$totalSteps,
      main = "Distribution of the total number of steps taken each day",
      xlab = "Total number of steps taken each day")
 ```
 
+![plot of chunk histstepsperday](figure/histstepsperday-1.png) 
+
 ### Calculate and report the mean and median of the total number of steps taken per day
 
-```{r meanmedian}
+
+```r
 meanDailySteps = mean(dailySteps$totalSteps)
 medianDailySteps = median(dailySteps$totalSteps)
 ```
 
 Rounded to 2 decimal places,  
-(a) the mean of the total number of steps taken per day = `r format(round(meanDailySteps,2),nsmall=2)`  
-(b) the median of the total number of steps taken per day = `r format(round(medianDailySteps,2),nsmall=2)`
+(a) the mean of the total number of steps taken per day = 9354.23  
+(b) the median of the total number of steps taken per day = 10395.00
 
 ## What is the average daily activity pattern?
 
@@ -74,38 +81,43 @@ Rounded to 2 decimal places,
 
 The missing values in the "steps" variable were ignored. 
 
-```{r averagestepsvsinterval,fig.height=5}
+
+```r
 averageSteps5min = ddply(activity,"interval",summarise,averageSteps = mean(steps,na.rm = TRUE))
 plot(averageSteps5min,type="l",
      ylab = "Average number of steps taken",
      xlab = "5-min interval",
      main = "Variation of steps taken within a day (averaged across all days)")
-
 ```
+
+![plot of chunk averagestepsvsinterval](figure/averagestepsvsinterval-1.png) 
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r maxsteps}
+
+```r
 maxInterval = averageSteps5min[which.max(averageSteps5min$averageSteps),"interval"]
 ```
 
-The 5-minute interval that contains the maximum number of steps is `r maxInterval`.
+The 5-minute interval that contains the maximum number of steps is 835.
 
 ## Imputing missing values
 
 ### Calculate and report the total number of missing values in the dataset
 
-```{r totalmising}
+
+```r
 rowcountNA = sum(is.na(activity$steps))
 ```
 
-The total number of missing values in the dataset is `r rowcountNA`.
+The total number of missing values in the dataset is 2304.
 
 ### Create a new dataset that is equal to the original dataset but with the missing data filled in by imputed values
 
 The mean for that 5-minute interval was used to replace the NA values.
 
-```{r impute,warning=FALSE}
+
+```r
 imputedActivity = activity
 imputedActivity$imputedSteps = activity$steps
 imputedActivity = ddply(imputedActivity,"interval",mutate,
@@ -117,29 +129,34 @@ imputedActivity = arrange(imputedActivity,date,interval)
 
 ### Make a histogram of the total number of steps taken each day with the imputed data
 
-```{r histimputed,fig.height=4}
+
+```r
 imputedDailySteps = ddply(imputedActivity,"date",summarise,totalSteps=sum(imputedSteps))
 hist(imputedDailySteps$totalSteps,
      main = "Distribution of the total number of steps taken each day (imputed data)",
      xlab = "Total number of steps taken each day")
 ```
 
+![plot of chunk histimputed](figure/histimputed-1.png) 
+
 ### Calculate and report the mean and median total number of steps taken per day with the imputed data
 
-```{r meanmedianimputed}
+
+```r
 meanImputedDailySteps = mean(imputedDailySteps$totalSteps)
 medianImputedDailySteps = median(imputedDailySteps$totalSteps)
 ```
 
 After imputing,  
-(a) the mean of the total number of steps taken per day changed from `r format(round(meanDailySteps,2),nsmall=2)` to `r format(round(meanImputedDailySteps,2),nsmall=2)` (diff = `r format(round(meanImputedDailySteps-meanDailySteps,2),nsmall=2)`)  
-(b) the median of the total number of steps taken per day changed from `r format(round(medianDailySteps,2),nsmall=2)` to `r format(round(medianImputedDailySteps,2),nsmall=2)` (diff = `r format(round(medianImputedDailySteps-medianDailySteps,2),nsmall=2)`)
+(a) the mean of the total number of steps taken per day changed from 9354.23 to 10766.19 (diff = 1411.96)  
+(b) the median of the total number of steps taken per day changed from 10395.00 to 10766.19 (diff = 371.19)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ### Create a new factor variable in the dataset with two levels - "weekday" and "weekend" 
 
-```{r factorweekday}
+
+```r
 imputedActivity$wd = factor(rep("weekday",nrow(imputedActivity)),
                             levels=c("weekend","weekday"))
 imputedActivity[which(weekdays(imputedActivity$date)=="Sunday"|
@@ -148,7 +165,8 @@ imputedActivity[which(weekdays(imputedActivity$date)=="Sunday"|
 
 ### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
-```{r averagestepsvsintervalwd,fig.height=5}
+
+```r
 averageSteps5minWd = ddply(imputedActivity,.(interval,wd),summarise,averageSteps = mean(imputedSteps))
 if(!require(ggplot2)){
   install.packages("ggplot2")
@@ -160,6 +178,8 @@ wplot = ggplot(averageSteps5minWd, aes(x=interval,y=averageSteps)) +
   labs(x="Interval", y="Number of steps")
 print(wplot)
 ```
+
+![plot of chunk averagestepsvsintervalwd](figure/averagestepsvsintervalwd-1.png) 
 
 From the panel plot, it can be seen that:  
 (a) the number of steps began to increase earlier for weekday, probably because the subject has to wake up earlier for work or school : )  
