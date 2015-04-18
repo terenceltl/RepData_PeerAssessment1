@@ -51,7 +51,7 @@ dailySteps = ddply(activity,"date",summarise,totalSteps = sum(steps,na.rm = TRUE
 
 ### Make a histogram of the total number of steps taken each day
 
-```{r histstepsperday,fig.heigh=4}
+```{r histstepsperday}
 hist(dailySteps$totalSteps,
      main = "Distribution of the total number of steps taken each day",
      xlab = "Total number of steps taken each day")
@@ -74,13 +74,12 @@ Rounded to 2 decimal places,
 
 The missing values in the "steps" variable were ignored. 
 
-```{r averagestepsvsinterval,fig.height=5}
+```{r averagestepsvsinterval}
 averageSteps5min = ddply(activity,"interval",summarise,averageSteps = mean(steps,na.rm = TRUE))
 plot(averageSteps5min,type="l",
      ylab = "Average number of steps taken",
      xlab = "5-min interval",
      main = "Variation of steps taken within a day (averaged across all days)")
-
 ```
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -117,10 +116,10 @@ imputedActivity = arrange(imputedActivity,date,interval)
 
 ### Make a histogram of the total number of steps taken each day with the imputed data
 
-```{r histimputed,fig.height=4}
+```{r histimputed}
 imputedDailySteps = ddply(imputedActivity,"date",summarise,totalSteps=sum(imputedSteps))
 hist(imputedDailySteps$totalSteps,
-     main = "Distribution of the total number of steps taken each day (imputed data)",
+     main = "Distribution of the total number of steps taken each day (imputed)",
      xlab = "Total number of steps taken each day")
 ```
 
@@ -148,7 +147,7 @@ imputedActivity[which(weekdays(imputedActivity$date)=="Sunday"|
 
 ### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
-```{r averagestepsvsintervalwd,fig.height=5}
+```{r averagestepsvsintervalwd}
 averageSteps5minWd = ddply(imputedActivity,.(interval,wd),summarise,averageSteps = mean(imputedSteps))
 if(!require(ggplot2)){
   install.packages("ggplot2")

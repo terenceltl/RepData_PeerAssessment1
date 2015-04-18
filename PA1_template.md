@@ -133,7 +133,7 @@ imputedActivity = arrange(imputedActivity,date,interval)
 ```r
 imputedDailySteps = ddply(imputedActivity,"date",summarise,totalSteps=sum(imputedSteps))
 hist(imputedDailySteps$totalSteps,
-     main = "Distribution of the total number of steps taken each day (imputed data)",
+     main = "Distribution of the total number of steps taken each day (imputed)",
      xlab = "Total number of steps taken each day")
 ```
 
