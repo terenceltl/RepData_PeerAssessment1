@@ -1,17 +1,16 @@
 ---
-title: 'Reproducible Research: Peer Assessment 1'
-output:
+title: "Reproducible Research: Peer Assessment 1"
+output: 
   html_document:
-    keep_md: yes
-  word_document: default
+    keep_md: true
 ---
 
 ## Initialization
 
 The following code was used to:  
-(a) load the knitr package  
-(b) make echo = TRUE and message = FALSE as default  
-(c) suppress scientific notation
+a. load the knitr package  
+b. make echo = TRUE and message = FALSE as default  
+c. suppress scientific notation
 
 ```{r setoptions,echo=TRUE,message=FALSE}
 if (!require("knitr")){
@@ -65,8 +64,8 @@ medianDailySteps = median(dailySteps$totalSteps)
 ```
 
 Rounded to 2 decimal places,  
-(a) the mean of the total number of steps taken per day = `r format(round(meanDailySteps,2),nsmall=2)`  
-(b) the median of the total number of steps taken per day = `r format(round(medianDailySteps,2),nsmall=2)`
+a. the mean of the total number of steps taken per day = `r format(round(meanDailySteps,2),nsmall=2)`  
+b. the median of the total number of steps taken per day = `r format(round(medianDailySteps,2),nsmall=2)`
 
 ## What is the average daily activity pattern?
 
@@ -104,12 +103,12 @@ The total number of missing values in the dataset is `r rowcountNA`.
 
 The mean for that 5-minute interval was used to replace the NA values.
 
-```{r impute,warning=FALSE}
+```{r impute}
 imputedActivity = activity
 imputedActivity$imputedSteps = activity$steps
 imputedActivity = ddply(imputedActivity,"interval",mutate,
                         imputedSteps = ifelse(is.na(steps),
-                        averageSteps5min[averageSteps5min$interval==interval,"averageSteps"],
+                        averageSteps5min[match(interval,averageSteps5min$interval),"averageSteps"],
                         steps))
 imputedActivity = arrange(imputedActivity,date,interval)
 ```
@@ -131,8 +130,8 @@ medianImputedDailySteps = median(imputedDailySteps$totalSteps)
 ```
 
 After imputing,  
-(a) the mean of the total number of steps taken per day changed from `r format(round(meanDailySteps,2),nsmall=2)` to `r format(round(meanImputedDailySteps,2),nsmall=2)` (diff = `r format(round(meanImputedDailySteps-meanDailySteps,2),nsmall=2)`)  
-(b) the median of the total number of steps taken per day changed from `r format(round(medianDailySteps,2),nsmall=2)` to `r format(round(medianImputedDailySteps,2),nsmall=2)` (diff = `r format(round(medianImputedDailySteps-medianDailySteps,2),nsmall=2)`)
+a. the mean of the total number of steps taken per day changed from `r format(round(meanDailySteps,2),nsmall=2)` to `r format(round(meanImputedDailySteps,2),nsmall=2)` (diff = `r format(round(meanImputedDailySteps-meanDailySteps,2),nsmall=2)`)  
+b. the median of the total number of steps taken per day changed from `r format(round(medianDailySteps,2),nsmall=2)` to `r format(round(medianImputedDailySteps,2),nsmall=2)` (diff = `r format(round(medianImputedDailySteps-medianDailySteps,2),nsmall=2)`)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -161,5 +160,5 @@ print(wplot)
 ```
 
 From the panel plot, it can be seen that:  
-(a) the number of steps began to increase earlier for weekday, probably because the subject has to wake up earlier for work or school : )  
-(b) the number of steps, from interval 1000 to 2000, seemed to be higher for weekend, probably due to a higher degree of freedom to walk around (no need to sit in a chair at work or at school)
+a. the number of steps began to increase earlier for weekday, probably because the subject has to wake up earlier for work or school : )  
+b. the number of steps, from interval 1000 to 2000, seemed to be higher for weekend, probably due to a higher degree of freedom to walk around (no need to sit in a chair at work or at school)

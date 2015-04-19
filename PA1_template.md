@@ -1,17 +1,16 @@
 ---
-title: 'Reproducible Research: Peer Assessment 1'
-output:
+title: "Reproducible Research: Peer Assessment 1"
+output: 
   html_document:
-    keep_md: yes
-  word_document: default
+    keep_md: true
 ---
 
 ## Initialization
 
 The following code was used to:  
-(a) load the knitr package  
-(b) make echo = TRUE and message = FALSE as default  
-(c) suppress scientific notation
+a. load the knitr package  
+b. make echo = TRUE and message = FALSE as default  
+c. suppress scientific notation
 
 
 ```r
@@ -72,8 +71,8 @@ medianDailySteps = median(dailySteps$totalSteps)
 ```
 
 Rounded to 2 decimal places,  
-(a) the mean of the total number of steps taken per day = 9354.23  
-(b) the median of the total number of steps taken per day = 10395.00
+a. the mean of the total number of steps taken per day = 9354.23  
+b. the median of the total number of steps taken per day = 10395.00
 
 ## What is the average daily activity pattern?
 
@@ -122,7 +121,7 @@ imputedActivity = activity
 imputedActivity$imputedSteps = activity$steps
 imputedActivity = ddply(imputedActivity,"interval",mutate,
                         imputedSteps = ifelse(is.na(steps),
-                        averageSteps5min[averageSteps5min$interval==interval,"averageSteps"],
+                        averageSteps5min[match(interval,averageSteps5min$interval),"averageSteps"],
                         steps))
 imputedActivity = arrange(imputedActivity,date,interval)
 ```
@@ -148,8 +147,8 @@ medianImputedDailySteps = median(imputedDailySteps$totalSteps)
 ```
 
 After imputing,  
-(a) the mean of the total number of steps taken per day changed from 9354.23 to 10766.19 (diff = 1411.96)  
-(b) the median of the total number of steps taken per day changed from 10395.00 to 10766.19 (diff = 371.19)
+a. the mean of the total number of steps taken per day changed from 9354.23 to 10766.19 (diff = 1411.96)  
+b. the median of the total number of steps taken per day changed from 10395.00 to 10766.19 (diff = 371.19)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -182,5 +181,5 @@ print(wplot)
 ![plot of chunk averagestepsvsintervalwd](figure/averagestepsvsintervalwd-1.png) 
 
 From the panel plot, it can be seen that:  
-(a) the number of steps began to increase earlier for weekday, probably because the subject has to wake up earlier for work or school : )  
-(b) the number of steps, from interval 1000 to 2000, seemed to be higher for weekend, probably due to a higher degree of freedom to walk around (no need to sit in a chair at work or at school)
+a. the number of steps began to increase earlier for weekday, probably because the subject has to wake up earlier for work or school : )  
+b. the number of steps, from interval 1000 to 2000, seemed to be higher for weekend, probably due to a higher degree of freedom to walk around (no need to sit in a chair at work or at school)
